@@ -1,0 +1,40 @@
+name: Build Windows Portable
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-win:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: |
+          cd app
+          npm install
+
+      - name: Build React app
+        run: |
+          cd app
+          npm run build
+
+      - name: Build Electron app
+        run: |
+          cd app
+          npm run electron-build
+
+      - name: Upload portable exe artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: QuadView-portable-windows
+          path: app/dist/*.exe
